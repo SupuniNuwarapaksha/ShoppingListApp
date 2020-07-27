@@ -1,17 +1,21 @@
 // components/dashboard.js
 
 import React, { Component, useState } from 'react';
-import { StyleSheet, View, Text, Button, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { StyleSheet, View, Text, Button, TouchableOpacity, TextInput, FlatList, KeyboardAvoidingView } from 'react-native';
 import firebase from '../database/firebase';
 import { AntDesign } from '@expo/vector-icons';
-import Logout from './logout'
+import Logout from './logout';
+
+var Data=  [{name:"Shop1"}, {name:"Shop2"}, {name:"Shop3"}, {name:"Shop4"}, {name:"Shop5"}, {name:"Shop6"}, {name:"Shop7"}, {name:"Shop8"}]
 
 export default class ShoppingBuddy extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       uid: '',
-    }
+    } 
+    
+    this.shopList= Data
   }
 
 
@@ -33,21 +37,36 @@ export default class ShoppingBuddy extends Component {
         <TouchableOpacity style={styles.userDetails} onPress={() => this.props.navigation.navigate('Profile')} >
           <AntDesign name="user" size={30} />
         </TouchableOpacity>
+
         
-        <View style={{ marginTop: 20, alignItems: "center", backgroundColor: "#008b8b", height: 400, padding: 32 }}>
-          <Text>HIIIS</Text>
-        </View>
-
-
-        <View style={styles.addButton}>
-          <TouchableOpacity
-            style={styles.SubmitButtonStyle}
-            activeOpacity={.5}
-          >
-            <Text style={styles.TextStyle}> + </Text>
+        <View style={{ marginTop: 20, alignItems: "center", height: 400, padding: 20 }}>
+          <FlatList
+            data={this.shopList}
+            keyExtractor={item => item.name}
+            renderItem={({item}) => (
+              <View style={styles.listItemConteiner}>
+            <Text style={styles.listItem}>{item.name}</Text>
+            <TouchableOpacity style={styles.addList}>
+              <View style={{paddingTop: 10}}>
+            <AntDesign name="delete" size={16}  />
+            </View>
           </TouchableOpacity>
+            </View>
+            )}
+          />
         </View>
 
+        <Text style={{marginTop: 20, fontSize: 20, color: '#008b8b',}}>Add a new list</Text>
+        <View style={{ flexDirection:'row' }}>
+          <TextInput style={styles.Input}/>
+          <View >
+          <TouchableOpacity>
+          <View style={styles.addNewButton}>
+            <AntDesign name="plus" size={16} color="#cde5d9"  />
+            </View>
+          </TouchableOpacity>
+          </View>
+        </View>
 
       </View>
     );
@@ -84,5 +103,28 @@ const styles = StyleSheet.create({
   userDetails: {
     marginTop: 10,
     marginLeft: 250
+  },
+  Input: {
+    borderWidth: 3,
+    borderColor: '#008b8b',
+    width: 200,
+  },
+  listItem: {
+    fontSize: 20,
+    marginLeft: 5,
+    marginRight: 165,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  listItemConteiner: {
+    width: 250,
+    borderRadius: 10,
+    marginBottom: 20,
+    flexDirection:'row',
+    backgroundColor: "#f0f8ff",
+  },
+  addNewButton: {
+    backgroundColor: "#008b8b",
+    padding: 10
   }
 });
