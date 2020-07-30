@@ -5,6 +5,7 @@ import { StyleSheet, View, Text, Button, TouchableOpacity, TextInput, FlatList, 
 import firebase from '../database/firebase';
 import { AntDesign } from '@expo/vector-icons';
 import Logout from './logout';
+import ViewList from './viewList'
 
 var db = firebase.database();
 
@@ -40,11 +41,22 @@ export default class ShoppingBuddy extends Component {
 
 
   addButton = (data) => {
-    firebase.database().ref('lists/' + 125).set({
-      listName: this.state.newListName,
-      userName: this.state.uid
-    });
-    console.log("hiii")
+    // firebase.database().ref('lists/' + 125).set({
+    //   listName: this.state.newListName,
+    //   userName: this.state.uid
+    // });
+    // console.log("hiii")
+    const addNotice = firebase.database().ref(`bhhhh/'${this.state.uid}'`);
+      addNotice.push().set({
+        noticeTittle: "this.state.noticeTittle",
+        notice: "this.state.notice",
+        dates: "date.toLocaleDateString()",
+        time: "date.toLocaleTimeString()",
+      });
+  }
+
+  goAddButton = () => {
+    console.log("Stupid")
   }
 
   render() {
@@ -64,30 +76,16 @@ export default class ShoppingBuddy extends Component {
         </TouchableOpacity>
 
 
-        <View style={{ marginTop: 20, alignItems: "center", height: 400, padding: 20 }}>
-          <FlatList
-            data={this.shopList}
-            keyExtractor={item => item.name}
-            renderItem={({ item }) => (
-              <View style={styles.listItemConteiner}>
-                <Text style={styles.listItem}>{item.name}</Text>
-                <TouchableOpacity style={styles.addList}>
-                  <View style={{ paddingTop: 10 }}>
-                    <AntDesign name="delete" size={16} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
-          />
+        <View style={{ alignItems: "center", height: 450 }}>
+          <ViewList />
         </View>
 
-        <Text style={{ marginTop: 20, fontSize: 20, color: '#008b8b', }}>Add a new list</Text>
+       
         <View style={{ flexDirection: 'row' }}>
-          <TextInput style={styles.Input} onChangeText={text => {this.state.newListName=text}} />
           <View >
-            <TouchableOpacity onPress={()=>{this.addButton(this.state.newListName)}} >
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('AddNewList')} >
               <View style={styles.addNewButton}>
-                <AntDesign name="plus" size={16} color="#cde5d9" />
+                <AntDesign name="plus" size={25} color="#cde5d9" />
               </View>
             </TouchableOpacity>
           </View>
@@ -126,7 +124,6 @@ const styles = StyleSheet.create({
     fontSize: 50
   },
   userDetails: {
-    marginTop: 10,
     marginLeft: 250
   },
   Input: {
@@ -149,7 +146,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f8ff",
   },
   addNewButton: {
+    borderRadius: 25,
     backgroundColor: "#008b8b",
-    padding: 10
+    padding: 10,
+    marginLeft: 200,
+    marginTop: 10
   }
 });

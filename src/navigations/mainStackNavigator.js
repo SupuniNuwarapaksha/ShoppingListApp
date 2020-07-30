@@ -6,6 +6,8 @@ import Signup from '../screens/signup';
 import Login from '../screens/login';
 import ShoppingBuddy from '../screens/homePage';
 import Logout from '../screens/logout'
+import AddNewList from '../screens/addNewLists';
+import ViewList from '../screens/viewList'
 
 const Stack = createStackNavigator()
 
@@ -54,6 +56,15 @@ function MainStackNavigator() {
          {headerLeft: null} 
        }
       />
+      <Stack.Screen 
+       name="AddNewList" 
+       component={AddNewList} 
+       options={
+         { title: 'Add New List' },
+         {headerLeft: null} 
+       }
+      />
+      
     </Stack.Navigator>
    </NavigationContainer>
   )
