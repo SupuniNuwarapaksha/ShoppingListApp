@@ -41,6 +41,13 @@ componentDidMount() {
         });
 }
 
+handleDelete(key) {
+  console.log(key);
+  firebase.database()
+    .ref(`shoplist/'${this.state.uid}'/` + key)
+    .remove();
+}
+
   render() {
     return (
       <View style={styles.container}>
@@ -59,7 +66,7 @@ componentDidMount() {
                                     <Text style={styles.textStyle}>{list[1]}</Text>
                                 </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.deleteButton}  >
+                                <TouchableOpacity style={styles.deleteButton} onPress={() => this.handleDelete(list[0])} >
                                     <AntDesign name="delete" size={20} />
                                 </TouchableOpacity>
                             </View>

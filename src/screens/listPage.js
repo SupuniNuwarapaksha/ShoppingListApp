@@ -7,8 +7,8 @@ import _ from 'lodash';
 export default class ListPage extends Component {
 
     state = {
-        listID: '',
-        listName: '',
+        listID: this.props.route.params.item,
+        listName: this.props.route.params.name,
         uid: firebase.auth().currentUser.uid,
         itemName: '',
         itemPrice: '',
@@ -21,7 +21,36 @@ export default class ListPage extends Component {
             listName: this.props.route.params.name,
             uid: firebase.auth().currentUser.uid,
         });
+        console.log(this.state.listID);
+        console.log(this.state.listName);
+        console.log(this.state.uid);
+        firebase.database()
+            .ref(`itemList/'${this.state.uid}'/'${this.state.listID}'`)
+            .on('value', (data) => {
+                const dataList = _.map(data.val(), (val, key) => {
+                    return {
+                        val,
+                        key,
+                    };
+                });
 
+                const arr = [];
+                for (let a = 0; a < dataList.length; a++) {
+                    arr.push([
+                        dataList[a].key,
+                        dataList[a].val.itemName,
+                        dataList[a].val.itemPrice,
+                        dataList[a].val.brought,
+                    ]);
+                }
+                console.log(arr);
+                this.setState({
+                    shoppinhList: arr,
+                });
+                console.log("hiii")
+
+                console.log(this.state.shoppinhList)
+            });
     }
 
     saveList = () => {
@@ -34,7 +63,7 @@ export default class ListPage extends Component {
         addNotice.push().set({
             itemName: this.state.itemName,
             itemPrice: this.state.itemPrice,
-            brought: "false"
+            brought: false
         });
 
         this.setState({
@@ -48,14 +77,12 @@ export default class ListPage extends Component {
         return (
             <View style={{ alignItems: "center" }}>
                 <ScrollView>
-                    <Text> {this.state.listID} </Text>
-                    <Text> {this.state.listName} </Text>
-                    <Text style={styles.addText}>Add a new item to the list</Text>
+                    <Text style={styles.addText}>Add a new item to the {this.state.listName} list</Text>
                     <View style={{ flexDirection: 'row' }} >
                         <TextInput style={styles.input1} placeholder=" Item Name"
                             onChangeText={text => { this.state.itemName = text }} />
 
-                        <TextInput style={styles.input2} placeholder=" Item Price" 
+                        <TextInput style={styles.input2} placeholder=" Item Price"
                             onChangeText={text => { this.state.itemPrice = text }} />
                         <TouchableOpacity style={styles.addNewButton} onPress={() => this.saveList()}>
                             <View style={styles.addNewButtonIcon}>
@@ -64,26 +91,48 @@ export default class ListPage extends Component {
                         </TouchableOpacity>
 
                     </View>
-                    <View>
-                    <ScrollView>
-                    {this.state.shoppinhList.map((list) => {
-                        return (
-                            <View style={{ flexDirection:'row' }} key={list[0]}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Items', {item: list[0], name: list[1]} )}>
-                                <View  style={styles.listItemConteiner}>
-                                    <Text style={styles.textStyle}>{list[1]}</Text>
-                                </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.deleteButton}  >
-                                    <AntDesign name="delete" size={20} />
-                                </TouchableOpacity>
-                            </View>
+                    <View style={styles.itemList} >
+                    <Text style={styles.listName}> {this.state.listName} </Text>
+                        <ScrollView>
+                            {this.state.shoppinhList.map((list) => {
+                                return (
+                                    <View style={{ flexDirection: 'row' }} key={list[0]}>
+                                        {( list[3]) ?
+                                            <TouchableOpacity style={styles.buyButton}  >
+                                                <AntDesign name="checkcircle" size={20} color="#a9a9a9" />
+                                            </TouchableOpacity>
+                                            : ((list[3] == ''))
+                                        }
 
-                        )
-                    })
+                                        {( !list[3]) ?
+                                            <TouchableOpacity style={styles.buyButton}  >
+                                                <AntDesign name="checkcircle" size={20} color="gray" />
+                                            </TouchableOpacity>
+                                            : (( !list[3] == ''))
+                                        }
 
-                    }
-                </ScrollView>
+                                        {( !list[3]) ?
+                                        <View style={styles.listItemConteiner}>
+                                            <Text style={styles.buytextStyle}>{list[1]}</Text>
+                                            <Text style={styles.textStylePrice}>Rs. {list[2]}</Text>
+                                        </View>
+                                        : (( !list[3] == ''))
+                                    }
+                                    {( list[3]) ?
+                                        <View style={styles.listItemConteiner}>
+                                            <Text style={styles.textStyle}>{list[1]}</Text>
+                                            <Text style={styles.textStylePrice}>Rs. {list[2]}</Text>
+                                        </View>
+                                        : (( list[3] == ''))
+                                    }
+
+                                    </View>
+
+                                )
+                            })
+
+                            }
+                        </ScrollView>
                     </View>
                 </ScrollView>
             </View>
@@ -108,8 +157,47 @@ const styles = StyleSheet.create({
     addText: {
         fontSize: 20,
         color: '#008b8b',
+        textAlign: "center",
+        marginTop: 20
     },
     addNewButtonIcon: {
         paddingTop: 2
+    },
+    listName: {
+        fontSize: 30,
+        textAlign: 'center',
+        color: '#008b8b',
+    },
+    listItemConteiner: {
+        flexDirection: 'row',
+        marginBottom: 5,
+    },
+    textStyle: {
+        paddingLeft: 10,
+        fontSize: 20,
+        color: "gray",
+    },
+    textStylePrice: {
+        paddingLeft: 10,
+        fontSize: 18,
+        color: "gray",
+        paddingTop: 2
+    },
+    buytextStyle:{
+        paddingLeft: 10,
+        fontSize: 20,
+        color: "gray",
+        textDecorationLine: 'line-through', textDecorationStyle: 'solid'
+     },
+    itemList: {
+        marginTop: 20,
+        alignItems: "center",
+        backgroundColor: "#f0f8ff",
+        width: 270,
+        marginLeft: 27
+    },
+    buyButton: {
+        paddingTop: 3
     }
+
 })
