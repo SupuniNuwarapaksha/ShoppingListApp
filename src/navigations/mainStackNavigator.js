@@ -7,7 +7,7 @@ import Login from '../screens/login';
 import ShoppingBuddy from '../screens/homePage';
 import Logout from '../screens/logout'
 import AddNewList from '../screens/addNewLists';
-import ViewList from '../screens/viewList'
+import ListPage from '../screens/listPage'
 
 const Stack = createStackNavigator()
 
@@ -60,11 +60,16 @@ function MainStackNavigator() {
        name="AddNewList" 
        component={AddNewList} 
        options={
-         { title: 'Add New List' },
-         {headerLeft: null} 
+         { title: 'Add New List' } 
        }
       />
-      
+      <Stack.Screen 
+       name="Items" 
+       component={ListPage} 
+       options={
+         { title: 'Items' }
+       }
+      />
     </Stack.Navigator>
    </NavigationContainer>
   )

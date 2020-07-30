@@ -36,6 +36,11 @@ export default class ViewList extends React.Component {
             });
     }
 
+    changeScreen (){
+        console.log("hey stpid")
+        this.props.navigation.navigate('AddNewList')
+    }
+
     render() {
         return (
             <View style={{ marginTop: 20, alignItems: "center", height: 400, padding: 20 }}>
@@ -43,9 +48,11 @@ export default class ViewList extends React.Component {
                     {this.state.shoppinhList.map((list) => {
                         return (
                             <View style={{ flexDirection:'row' }}>
+                                <TouchableOpacity onPress={() => this.changeScreen()}>
                                 <View key={list[0]} style={styles.listItemConteiner}>
                                     <Text style={styles.textStyle}>{list[1]}</Text>
                                 </View>
+                                </TouchableOpacity>
                                 <TouchableOpacity style={styles.deleteButton}  >
                                     <AntDesign name="delete" size={20} />
                                 </TouchableOpacity>

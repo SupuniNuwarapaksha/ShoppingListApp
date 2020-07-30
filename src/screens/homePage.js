@@ -1,86 +1,77 @@
 // components/dashboard.js
 
 import React, { Component, useState } from 'react';
-import { StyleSheet, View, Text, Button, TouchableOpacity, TextInput, FlatList, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text, Button, TouchableOpacity, TextInput, FlatList, KeyboardAvoidingView, ScrollView } from 'react-native';
 import firebase from '../database/firebase';
 import { AntDesign } from '@expo/vector-icons';
 import Logout from './logout';
 import ViewList from './viewList'
+import _ from 'lodash';
 
-var db = firebase.database();
-
-var Data = [{ name: "Shop1" }, { name: "Shop2" }, { name: "Shop3" }, { name: "Shop4" }, { name: "Shop5" }, { name: "Shop6" }, { name: "Shop7" }, { name: "Shop8" }]
 
 export default class ShoppingBuddy extends Component {
 
   state = {
-    newListName: ''
-  }
-  constructor(props) {
-    super(props);
-    this.state = {
-      uid: '',
-      newListName: ''
-    }
-    
+    shoppinhList: [],
+    uid: firebase.auth().currentUser.uid,
+}
 
-    this.shopList = Data
-    
-  }
+componentDidMount() {
+    firebase.database()
+        .ref(`shoplist/'${this.state.uid}'`)
+        .on('value', (data) => {
+            const dataList = _.map(data.val(), (val, key) => {
+                return {
+                    val,
+                    key,
+                };
+            });
 
-
-
-
-  signOut = () => {
-    firebase.auth().signOut().then(() => {
-      this.props.navigation.navigate('Login')
-    })
-      .catch(error => this.setState({ errorMessage: error.message }))
-  }
-
-
-
-  addButton = (data) => {
-    // firebase.database().ref('lists/' + 125).set({
-    //   listName: this.state.newListName,
-    //   userName: this.state.uid
-    // });
-    // console.log("hiii")
-    const addNotice = firebase.database().ref(`bhhhh/'${this.state.uid}'`);
-      addNotice.push().set({
-        noticeTittle: "this.state.noticeTittle",
-        notice: "this.state.notice",
-        dates: "date.toLocaleDateString()",
-        time: "date.toLocaleTimeString()",
-      });
-  }
-
-  goAddButton = () => {
-    console.log("Stupid")
-  }
+            const arr = [];
+            for (let a = 0; a < dataList.length; a++) {
+                arr.push([
+                    dataList[a].key,
+                    dataList[a].val.listName,
+                ]);
+            }
+            console.log(arr);
+            this.setState({
+                shoppinhList: arr,
+            });
+        });
+}
 
   render() {
-    var lName;
-
-    this.state = {
-      displayName: firebase.auth().currentUser.displayName,
-      uid: firebase.auth().currentUser.uid,
-    }
-
-
-
     return (
       <View style={styles.container}>
         <TouchableOpacity style={styles.userDetails} onPress={() => this.props.navigation.navigate('Profile')} >
           <AntDesign name="user" size={30} />
         </TouchableOpacity>
 
-
         <View style={{ alignItems: "center", height: 450 }}>
-          <ViewList />
+        <View style={{ marginTop: 20, alignItems: "center", height: 400, padding: 20 }}>
+                <ScrollView>
+                    {this.state.shoppinhList.map((list) => {
+                        return (
+                            <View style={{ flexDirection:'row' }} key={list[0]}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Items', {item: list[0], name: list[1]} )}>
+                                <View  style={styles.listItemConteiner}>
+                                    <Text style={styles.textStyle}>{list[1]}</Text>
+                                </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.deleteButton}  >
+                                    <AntDesign name="delete" size={20} />
+                                </TouchableOpacity>
+                            </View>
+
+                        )
+                    })
+
+                    }
+                </ScrollView>
+            </View>
         </View>
 
-       
         <View style={{ flexDirection: 'row' }}>
           <View >
             <TouchableOpacity onPress={() => this.props.navigation.navigate('AddNewList')} >
@@ -106,8 +97,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   textStyle: {
-    fontSize: 15,
-    marginBottom: 20
+    fontSize: 20,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 5
   },
   addButton: {
     width: "30%",
@@ -139,11 +132,12 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   listItemConteiner: {
-    width: 250,
+    width: 180,
     borderRadius: 10,
     marginBottom: 20,
     flexDirection: 'row',
     backgroundColor: "#f0f8ff",
+    marginRight: 3
   },
   addNewButton: {
     borderRadius: 25,
@@ -151,5 +145,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginLeft: 200,
     marginTop: 10
+  },
+  deleteButton: {
+    paddingTop: 8
   }
 });
