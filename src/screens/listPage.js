@@ -11,8 +11,9 @@ export default class ListPage extends Component {
         listName: this.props.route.params.name,
         uid: firebase.auth().currentUser.uid,
         itemName: '',
-        itemPrice: '',
-        shoppinhList: []
+        itemPrice: 0,
+        shoppinhList: [],
+        totalPrice: 0,
     }
 
     componentDidMount() {
@@ -35,25 +36,32 @@ export default class ListPage extends Component {
                 });
 
                 const arr = [];
+                let price= 0;
+                let total=0;
                 for (let a = 0; a < dataList.length; a++) {
                     arr.push([
                         dataList[a].key,
                         dataList[a].val.itemName,
                         dataList[a].val.itemPrice,
                         dataList[a].val.brought,
+                        price= dataList[a].val.itemPrice,
+                        total= total + parseInt(price)
                     ]);
                 }
                 console.log(arr);
                 this.setState({
                     shoppinhList: arr,
+                    totalPrice: total
                 });
                 console.log("hiii")
 
                 console.log(this.state.shoppinhList)
+                console.log(this.state.totalPrice)
             });
     }
 
     saveList = () => {
+        if(this.state.itemName && this.state.itemPrice) {
         this.setState({
             uid: firebase.auth().currentUser.uid,
         })
@@ -70,8 +78,16 @@ export default class ListPage extends Component {
             itemName: '',
             itemPrice: '',
         });
+    }
 
     };
+
+    handleDelete(key) {
+        console.log(key);
+        firebase.database()
+          .ref(`itemList/'${this.state.uid}'/'${this.state.listID}'/` + key)
+          .remove();
+      }
 
     render() {
         return (
@@ -82,8 +98,10 @@ export default class ListPage extends Component {
                         <TextInput style={styles.input1} placeholder=" Item Name"
                             onChangeText={text => { this.state.itemName = text }} />
 
-                        <TextInput style={styles.input2} placeholder=" Item Price"
-                            onChangeText={text => { this.state.itemPrice = text }} />
+                        <TextInput style={styles.input2} placeholder=" Item Price" keyboardType="numeric"
+                            onChangeText={value => { this.state.itemPrice = value }} 
+                            // onChangeText={value => value.match(/[0-9]*/gm) && setNum1(value)}
+                            />
                         <TouchableOpacity style={styles.addNewButton} onPress={() => this.saveList()}>
                             <View style={styles.addNewButtonIcon}>
                                 <AntDesign name="plus" size={25} color="#cde5d9" />
@@ -97,6 +115,7 @@ export default class ListPage extends Component {
                             {this.state.shoppinhList.map((list) => {
                                 return (
                                     <View style={{ flexDirection: 'row' }} key={list[0]}>
+                                        
                                         {( list[3]) ?
                                             <TouchableOpacity style={styles.buyButton}  >
                                                 <AntDesign name="checkcircle" size={20} color="#a9a9a9" />
@@ -110,7 +129,7 @@ export default class ListPage extends Component {
                                             </TouchableOpacity>
                                             : (( !list[3] == ''))
                                         }
-
+                                        <View style={{width: 200}}>
                                         {( !list[3]) ?
                                         <View style={styles.listItemConteiner}>
                                             <Text style={styles.buytextStyle}>{list[1]}</Text>
@@ -125,7 +144,10 @@ export default class ListPage extends Component {
                                         </View>
                                         : (( list[3] == ''))
                                     }
-
+                                    </View>
+                                <TouchableOpacity style={styles.deleteButton} onPress={() => this.handleDelete(list[0])} >
+                                    <AntDesign name="delete" size={20} />
+                                </TouchableOpacity>
                                     </View>
 
                                 )
@@ -135,6 +157,11 @@ export default class ListPage extends Component {
                         </ScrollView>
                     </View>
                 </ScrollView>
+                <View style={styles.price}>
+                <Text style={styles.priceText}>Total: </Text>
+                <Text style={styles.priceText1}>{this.state.totalPrice}/=</Text>
+                </View>
+                
             </View>
         )
     }
@@ -190,14 +217,33 @@ const styles = StyleSheet.create({
         textDecorationLine: 'line-through', textDecorationStyle: 'solid'
      },
     itemList: {
-        marginTop: 20,
+        marginTop: 30,
         alignItems: "center",
         backgroundColor: "#f0f8ff",
         width: 270,
-        marginLeft: 27
+        marginLeft: 27,
+        height: 370
     },
     buyButton: {
         paddingTop: 3
+    },
+    deleteButton: {
+        paddingTop: 3,
+    },
+    priceText: {
+        color: '#008b8b',
+        fontSize: 25,
+        textAlign: "center",
+        
+    },
+    priceText1: {
+        color: "#1e90ff",
+        fontSize: 50,
+        textAlign: "center",
+        paddingTop: 10
+    },
+    price: {
+        flexDirection: 'row',
+        marginTop: 15
     }
-
 })
