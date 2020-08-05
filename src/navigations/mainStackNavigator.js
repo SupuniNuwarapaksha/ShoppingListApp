@@ -7,7 +7,8 @@ import Login from '../screens/login';
 import ShoppingBuddy from '../screens/homePage';
 import Logout from '../screens/logout'
 import AddNewList from '../screens/addNewLists';
-import ListPage from '../screens/listPage'
+import ListPage from '../screens/listPage';
+import gettingStarted from '../screens/gotStarted';
 
 const Stack = createStackNavigator()
 
@@ -15,7 +16,7 @@ function MainStackNavigator() {
   return (
     <NavigationContainer>
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Getting Started"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -27,6 +28,11 @@ function MainStackNavigator() {
           fontSize: 30
         },
       }}>
+      <Stack.Screen 
+        name="Getting Started" 
+        component={gettingStarted} 
+        options={{ title: '' }}
+      /> 
       <Stack.Screen 
         name="Signup" 
         component={Signup} 
