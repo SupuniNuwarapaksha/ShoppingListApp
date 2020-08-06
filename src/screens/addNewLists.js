@@ -42,6 +42,7 @@ export default class AddNewLists extends Component {
         listName: this.state.listName,
         dates: date.toLocaleDateString(),
         time: date.toLocaleTimeString(),
+        deleted: false,
       });
     
           this.setState({

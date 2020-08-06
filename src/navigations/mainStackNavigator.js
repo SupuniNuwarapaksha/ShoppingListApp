@@ -31,7 +31,7 @@ function MainStackNavigator() {
       <Stack.Screen 
         name="Getting Started" 
         component={gettingStarted} 
-        options={{ title: '' }}
+        options={{ title: null }}
       /> 
       <Stack.Screen 
         name="Signup" 
@@ -58,8 +58,7 @@ function MainStackNavigator() {
        name="Profile" 
        component={Logout} 
        options={
-         { title: 'Shopping Buddy' },
-         {headerLeft: null} 
+         { title: 'Profile' }
        }
       />
       <Stack.Screen 

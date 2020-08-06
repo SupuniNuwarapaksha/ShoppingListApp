@@ -29,10 +29,12 @@ componentDidMount() {
 
             const arr = [];
             for (let a = 0; a < dataList.length; a++) {
-                arr.push([
+                if(!(dataList[a].val.deleted)) {arr.push([
                     dataList[a].key,
                     dataList[a].val.listName,
-                ]);
+                    dataList[a].val.dates,
+                    dataList[a].val.time
+                ]);}
             }
             console.log(arr);
             this.setState({
@@ -46,6 +48,20 @@ handleDelete(key) {
   firebase.database()
     .ref(`shoplist/'${this.state.uid}'/` + key)
     .remove();
+}
+
+gotobin(key, name, date, times){
+  let deleted=true;
+  firebase.database()
+        .ref(`shoplist/'${this.state.uid}'`)
+        .child(key)
+        .update({
+          listName: name,
+          dates: date,
+          time: times,
+          deleted: true})
+        .then(console.log("Hiii"));
+
 }
 
   render() {
@@ -66,7 +82,7 @@ handleDelete(key) {
                                     <Text style={styles.textStyle}>{list[1]}</Text>
                                 </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.deleteButton} onPress={() => this.handleDelete(list[0])} >
+                                <TouchableOpacity style={styles.deleteButton} onPress={() => this.gotobin(list[0], list[1], list[2], list[3])} >
                                     <AntDesign name="delete" size={20} />
                                 </TouchableOpacity>
                             </View>

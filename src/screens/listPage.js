@@ -89,6 +89,18 @@ export default class ListPage extends Component {
           .remove();
       }
 
+      updateBrought(key, name, price, brought){
+          let buy= !brought;
+        firebase.database()
+        .ref(`itemList/'${this.state.uid}'/'${this.state.listID}'`)
+        .child(key)
+        .update({
+            itemName: name, 
+            itemPrice: price, 
+            brought: buy})
+        .then(console.log("Hiii"));
+      }
+
     render() {
         return (
             <View style={{ alignItems: "center" }}>
@@ -118,26 +130,26 @@ export default class ListPage extends Component {
                                         
                                         {( list[3]) ?
                                             <TouchableOpacity style={styles.buyButton}  >
-                                                <AntDesign name="checkcircle" size={20} color="#a9a9a9" />
+                                                <AntDesign name="checkcircle" size={20} color="#a9a9a9" onPress={()=> {this.updateBrought(list[0], list[1], list[2], list[3])}} />
                                             </TouchableOpacity>
                                             : ((list[3] == ''))
                                         }
 
                                         {( !list[3]) ?
                                             <TouchableOpacity style={styles.buyButton}  >
-                                                <AntDesign name="checkcircle" size={20} color="gray" />
+                                                <AntDesign name="checkcircle" size={20} color="gray" onPress={()=> {this.updateBrought(list[0], list[1], list[2], list[3])}} />
                                             </TouchableOpacity>
                                             : (( !list[3] == ''))
                                         }
                                         <View style={{width: 200}}>
-                                        {( !list[3]) ?
+                                        {( list[3]) ?
                                         <View style={styles.listItemConteiner}>
                                             <Text style={styles.buytextStyle}>{list[1]}</Text>
                                             <Text style={styles.textStylePrice}>Rs. {list[2]}</Text>
                                         </View>
                                         : (( !list[3] == ''))
                                     }
-                                    {( list[3]) ?
+                                    {( !list[3]) ?
                                         <View style={styles.listItemConteiner}>
                                             <Text style={styles.textStyle}>{list[1]}</Text>
                                             <Text style={styles.textStylePrice}>Rs. {list[2]}</Text>
