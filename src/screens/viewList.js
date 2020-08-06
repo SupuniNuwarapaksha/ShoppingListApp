@@ -37,7 +37,6 @@ export default class ViewList extends React.Component {
     }
 
     changeScreen (){
-        console.log("hey stpid")
         this.props.navigation.navigate('AddNewList')
     }
 

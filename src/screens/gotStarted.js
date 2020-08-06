@@ -10,12 +10,10 @@ export default class gettingStarted extends Component {
     checkuserState(){
         firebase.auth().onAuthStateChanged(user => {
             if(user){ 
-                console.log("hii"); 
                 this.setState({loggedIn:true}) ;
                 this.props.navigation.navigate('Shopping Buddy')
             }
             else { 
-                console.log("Idiot"); 
                 this.setState({loggedIn:false})
                 this.props.navigation.navigate('Login')
             }
@@ -35,7 +33,7 @@ export default class gettingStarted extends Component {
             </View>
             <View style={styles.footer}>
                 <Text style={styles.footerTitle}>Shopping buddy </Text>
-                <Text style={styles.footerParagraph}>Manage your shopping list</Text>
+                <Text style={styles.footerParagraph}>Kaushalya N. P. S. - 17000823</Text>
             </View>
             <View style={{backgroundColor: "#fff"}}>
             <TouchableOpacity style={styles.SubmitButtonStyle} activeOpacity={.5} onPress={() => {

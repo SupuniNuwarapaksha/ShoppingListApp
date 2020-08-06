@@ -60,7 +60,7 @@ gotobin(key, name, date, times){
           dates: date,
           time: times,
           deleted: true})
-        .then(console.log("Hiii"));
+        .then(console.log("updated succcessfully"));
 
 }
 

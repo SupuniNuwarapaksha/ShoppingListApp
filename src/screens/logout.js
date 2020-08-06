@@ -63,7 +63,7 @@ export default class Logout extends Component {
                 time: times,
                 deleted: false
             })
-            .then(console.log("Hiii"));
+            .then(console.log("updated successfully"));
 
     }
 

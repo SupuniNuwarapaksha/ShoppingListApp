@@ -14,6 +14,7 @@ export default class ListPage extends Component {
         itemPrice: 0,
         shoppinhList: [],
         totalPrice: 0,
+        errorMessage: ''
     }
 
     componentDidMount() {
@@ -36,16 +37,16 @@ export default class ListPage extends Component {
                 });
 
                 const arr = [];
-                let price= 0;
-                let total=0;
+                let price = 0;
+                let total = 0;
                 for (let a = 0; a < dataList.length; a++) {
                     arr.push([
                         dataList[a].key,
                         dataList[a].val.itemName,
                         dataList[a].val.itemPrice,
                         dataList[a].val.brought,
-                        price= dataList[a].val.itemPrice,
-                        total= total + parseInt(price)
+                        price = dataList[a].val.itemPrice,
+                        total = total + parseInt(price)
                     ]);
                 }
                 console.log(arr);
@@ -53,7 +54,6 @@ export default class ListPage extends Component {
                     shoppinhList: arr,
                     totalPrice: total
                 });
-                console.log("hiii")
 
                 console.log(this.state.shoppinhList)
                 console.log(this.state.totalPrice)
@@ -61,45 +61,50 @@ export default class ListPage extends Component {
     }
 
     saveList = () => {
-        if(this.state.itemName && this.state.itemPrice) {
-        this.setState({
-            uid: firebase.auth().currentUser.uid,
-        })
-        console.log(this.state.uid)
+        if (this.state.itemName && this.state.itemPrice) {
+            this.setState({
+                uid: firebase.auth().currentUser.uid,
+            })
+            console.log(this.state.uid)
 
-        const addNotice = firebase.database().ref(`itemList/'${this.state.uid}'/'${this.state.listID}'`);
-        addNotice.push().set({
-            itemName: this.state.itemName,
-            itemPrice: this.state.itemPrice,
-            brought: false
-        });
+            const addNotice = firebase.database().ref(`itemList/'${this.state.uid}'/'${this.state.listID}'`);
+            addNotice.push().set({
+                itemName: this.state.itemName,
+                itemPrice: this.state.itemPrice,
+                brought: false
+            });
 
-        this.setState({
-            itemName: '',
-            itemPrice: '',
-        });
-    }
+            this.setState({
+                itemName: '',
+                itemPrice: '',
+            });
+        } else {
+            this.setState({
+                errorMessage: "You have to insert both name & price!"
+            })
+        }
 
     };
 
     handleDelete(key) {
         console.log(key);
         firebase.database()
-          .ref(`itemList/'${this.state.uid}'/'${this.state.listID}'/` + key)
-          .remove();
-      }
+            .ref(`itemList/'${this.state.uid}'/'${this.state.listID}'/` + key)
+            .remove();
+    }
 
-      updateBrought(key, name, price, brought){
-          let buy= !brought;
+    updateBrought(key, name, price, brought) {
+        let buy = !brought;
         firebase.database()
-        .ref(`itemList/'${this.state.uid}'/'${this.state.listID}'`)
-        .child(key)
-        .update({
-            itemName: name, 
-            itemPrice: price, 
-            brought: buy})
-        .then(console.log("Hiii"));
-      }
+            .ref(`itemList/'${this.state.uid}'/'${this.state.listID}'`)
+            .child(key)
+            .update({
+                itemName: name,
+                itemPrice: price,
+                brought: buy
+            })
+            .then(console.log("Updated successfully"));
+    }
 
     render() {
         return (
@@ -111,9 +116,9 @@ export default class ListPage extends Component {
                             onChangeText={text => { this.state.itemName = text }} />
 
                         <TextInput style={styles.input2} placeholder=" Item Price" keyboardType="numeric"
-                            onChangeText={value => { this.state.itemPrice = value }} 
-                            // onChangeText={value => value.match(/[0-9]*/gm) && setNum1(value)}
-                            />
+                            onChangeText={value => { this.state.itemPrice = value }}
+                        // onChangeText={value => value.match(/[0-9]*/gm) && setNum1(value)}
+                        />
                         <TouchableOpacity style={styles.addNewButton} onPress={() => this.saveList()}>
                             <View style={styles.addNewButtonIcon}>
                                 <AntDesign name="plus" size={25} color="#cde5d9" />
@@ -121,45 +126,46 @@ export default class ListPage extends Component {
                         </TouchableOpacity>
 
                     </View>
+                    <Text style={{color: "red", fontSize: 15, textAlign: "center"}}>{this.state.errorMessage}</Text>
                     <View style={styles.itemList} >
-                    <Text style={styles.listName}> {this.state.listName} </Text>
+                        <Text style={styles.listName}> {this.state.listName} </Text>
                         <ScrollView>
                             {this.state.shoppinhList.map((list) => {
                                 return (
                                     <View style={{ flexDirection: 'row' }} key={list[0]}>
-                                        
-                                        {( list[3]) ?
+
+                                        {(list[3]) ?
                                             <TouchableOpacity style={styles.buyButton}  >
-                                                <AntDesign name="checkcircle" size={20} color="#a9a9a9" onPress={()=> {this.updateBrought(list[0], list[1], list[2], list[3])}} />
+                                                <AntDesign name="checkcircle" size={20} color="#a9a9a9" onPress={() => { this.updateBrought(list[0], list[1], list[2], list[3]) }} />
                                             </TouchableOpacity>
                                             : ((list[3] == ''))
                                         }
 
-                                        {( !list[3]) ?
+                                        {(!list[3]) ?
                                             <TouchableOpacity style={styles.buyButton}  >
-                                                <AntDesign name="checkcircle" size={20} color="gray" onPress={()=> {this.updateBrought(list[0], list[1], list[2], list[3])}} />
+                                                <AntDesign name="checkcircle" size={20} color="gray" onPress={() => { this.updateBrought(list[0], list[1], list[2], list[3]) }} />
                                             </TouchableOpacity>
-                                            : (( !list[3] == ''))
+                                            : ((!list[3] == ''))
                                         }
-                                        <View style={{width: 200}}>
-                                        {( list[3]) ?
-                                        <View style={styles.listItemConteiner}>
-                                            <Text style={styles.buytextStyle}>{list[1]}</Text>
-                                            <Text style={styles.textStylePrice}>Rs. {list[2]}</Text>
+                                        <View style={{ width: 200 }}>
+                                            {(list[3]) ?
+                                                <View style={styles.listItemConteiner}>
+                                                    <Text style={styles.buytextStyle}>{list[1]}</Text>
+                                                    <Text style={styles.textStylePrice}>Rs. {list[2]}</Text>
+                                                </View>
+                                                : ((!list[3] == ''))
+                                            }
+                                            {(!list[3]) ?
+                                                <View style={styles.listItemConteiner}>
+                                                    <Text style={styles.textStyle}>{list[1]}</Text>
+                                                    <Text style={styles.textStylePrice}>Rs. {list[2]}</Text>
+                                                </View>
+                                                : ((list[3] == ''))
+                                            }
                                         </View>
-                                        : (( !list[3] == ''))
-                                    }
-                                    {( !list[3]) ?
-                                        <View style={styles.listItemConteiner}>
-                                            <Text style={styles.textStyle}>{list[1]}</Text>
-                                            <Text style={styles.textStylePrice}>Rs. {list[2]}</Text>
-                                        </View>
-                                        : (( list[3] == ''))
-                                    }
-                                    </View>
-                                <TouchableOpacity style={styles.deleteButton} onPress={() => this.handleDelete(list[0])} >
-                                    <AntDesign name="delete" size={20} />
-                                </TouchableOpacity>
+                                        <TouchableOpacity style={styles.deleteButton} onPress={() => this.handleDelete(list[0])} >
+                                            <AntDesign name="delete" size={20} />
+                                        </TouchableOpacity>
                                     </View>
 
                                 )
@@ -170,10 +176,10 @@ export default class ListPage extends Component {
                     </View>
                 </ScrollView>
                 <View style={styles.price}>
-                <Text style={styles.priceText}>Total: </Text>
-                <Text style={styles.priceText1}>{this.state.totalPrice}/=</Text>
+                    <Text style={styles.priceText}>Total: </Text>
+                    <Text style={styles.priceText1}>{this.state.totalPrice}/=</Text>
                 </View>
-                
+
             </View>
         )
     }
@@ -222,12 +228,12 @@ const styles = StyleSheet.create({
         color: "gray",
         paddingTop: 2
     },
-    buytextStyle:{
+    buytextStyle: {
         paddingLeft: 10,
         fontSize: 20,
         color: "gray",
         textDecorationLine: 'line-through', textDecorationStyle: 'solid'
-     },
+    },
     itemList: {
         marginTop: 30,
         alignItems: "center",
@@ -246,7 +252,7 @@ const styles = StyleSheet.create({
         color: '#008b8b',
         fontSize: 25,
         textAlign: "center",
-        
+
     },
     priceText1: {
         color: "#1e90ff",
