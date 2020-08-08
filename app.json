@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "shoplist",
+    "name": "Shopping Buddy",
     "slug": "shoplist",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -17,7 +17,7 @@
       "**/*"
     ],
     "android": {
-      "package": "com.yourcompany.yourappname",
+      "package": "com.sup.shoppingBuddy",
       "versionCode": 1
     }
   }
