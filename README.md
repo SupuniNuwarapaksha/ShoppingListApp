@@ -21,12 +21,10 @@ A mobile solution to manage the day to day shopping lists and requirements.
 ### system requirements
 - At least you should nee android version 4.1 or any higher version
 - Need interconnection
-            =============================
  		buildToolsVersion = "28.0.3"
         minSdkVersion = 16
         compileSdkVersion = 28
         targetSdkVersion = 28
-    =============================
 
 ### How to use
 - 1st you have to signup and login to the app
@@ -38,6 +36,12 @@ A mobile solution to manage the day to day shopping lists and requirements.
 - From the profile you can view your recycle bin and logout option
 - You can restore or delete lists from the recycle bin
 
+### Set up
+- Download the project
+- Go to project folder directory
+- Run "npm install" and "yarn install"
+- Run "npm start"
+- Run on your emulator or use expo app on your android mobile phone
 
 
 
