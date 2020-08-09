@@ -21,10 +21,10 @@ A mobile solution to manage the day to day shopping lists and requirements.
 ### system requirements
 - At least you should nee android version 4.1 or any higher version
 - Need interconnection
- 		buildToolsVersion = "28.0.3"
-        minSdkVersion = 16
-        compileSdkVersion = 28
-        targetSdkVersion = 28
+- buildToolsVersion = "28.0.3"
+- minSdkVersion = 16
+- compileSdkVersion = 28
+- targetSdkVersion = 28
 
 ### How to use
 - 1st you have to signup and login to the app
@@ -37,6 +37,13 @@ A mobile solution to manage the day to day shopping lists and requirements.
 - You can restore or delete lists from the recycle bin
 
 ### Set up
+### # Prerequisites for windows 
+- Node.js (10.16.0) 
+- Python 2 (developed using 3.8.3) 
+- Java development kit(JDK) 
+- Source code editor (Visual Studio code) 
+
+### # Execution
 - Download the project
 - Go to project folder directory
 - Run "npm install" and "yarn install"
